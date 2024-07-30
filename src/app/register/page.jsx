@@ -30,7 +30,7 @@ export default function Register() {
                   type="email"
                   name="email"
                   id="email"
-                  className="border  rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                   placeholder="ejemplo@gmail.com"
                   required
                 />
@@ -51,12 +51,22 @@ export default function Register() {
                   required
                 />
               </div>
+
               <Button
                 formAction={signup}
                 className="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
                 Crear Cuenta
               </Button>
+              <p className="text-sm font-light text-gray-400">
+                Ya tienes una cuenta?{" "}
+                <a
+                  href="/login"
+                  className="font-medium text-blue-500 hover:underline"
+                >
+                  Inicia Sesión
+                </a>
+              </p>
             </form>
           </div>
         </div>

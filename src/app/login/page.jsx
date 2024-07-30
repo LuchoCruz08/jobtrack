@@ -61,7 +61,7 @@ export default function Login() {
               <p className="text-sm font-light text-gray-400">
                 No tienes una cuenta?{" "}
                 <a
-                  href="/auth/register"
+                  href="/register"
                   className="font-medium text-blue-500 hover:underline"
                 >
                   Crear Cuenta
