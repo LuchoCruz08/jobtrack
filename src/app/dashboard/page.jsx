@@ -6,9 +6,12 @@ import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const Dashboard = () => {
   const [jobs, setJobs] = useState([]);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [statusFilter, setStatusFilter] = useState("Todos");
   const supabase = createClient();
   const router = useRouter();
 
@@ -46,6 +49,25 @@ const Dashboard = () => {
 
   useEffect(() => {
     getJobs();
+  }); 
+
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  };
+
+  const sortedJobs = [...jobs].sort((a, b) => {
+    if (sortOrder === "asc") {
+      return new Date(a.application_date) - new Date(b.application_date);
+    } else {
+      return new Date(b.application_date) - new Date(a.application_date);
+    }
+  });
+
+  const filteredJobs = sortedJobs.filter((job) => {
+    if (statusFilter === "Todos") {
+      return true;
+    }
+    return job.status === statusFilter;
   });
 
   return (
@@ -62,6 +84,29 @@ const Dashboard = () => {
           </Link>
         </div>
 
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center">
+            <label className="mr-2">Filtrar por estado:</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-gray-700 text-white rounded-lg px-2 py-1"
+            >
+              <option value="Todos">Todos</option>
+              <option value="Rechazado">Rechazado</option>
+              <option value="Aceptado">Aceptado</option>
+              <option value="En Proceso">En Proceso</option>
+              <option value="Postulado">Postulado</option>
+            </select>
+          </div>
+          <button
+            onClick={toggleSortOrder}
+            className="ml-2 text-white hover:text-gray-400"
+          >
+            Ordenar por fecha {sortOrder === "asc" ? <ChevronUp /> : <ChevronDown />}
+          </button>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full bg-gray-800 rounded-lg">
             <thead>
@@ -75,7 +120,7 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {jobs.map((job) => (
+              {filteredJobs.map((job) => (
                 <tr key={job.id} className="hover:bg-gray-700">
                   <td className="py-2 px-4 border-b border-gray-700">
                     {job.job_title}
@@ -92,7 +137,7 @@ const Dashboard = () => {
                         className="text-green-600 underline hover:no-underline"
                         href={`/dashboard/ver/${job.id}`}
                       >
-                        Ver/Editar
+                        Ver Más Información/Editar
                       </Link>
                       <button
                         onClick={() => handleDelete(job.id, job.job_title)}
@@ -104,10 +149,10 @@ const Dashboard = () => {
                   </td>
                 </tr>
               ))}
-              {jobs?.length < 1 && (
+              {filteredJobs.length < 1 && (
                 <tr>
                   <td colSpan="4" className="py-2 px-4 text-center">
-                    Todavía no agregaste ninguna postulación.
+                    No hay postulaciones.
                   </td>
                 </tr>
               )}

@@ -14,7 +14,11 @@ export default function Create() {
     platform: "",
     status: "",
     application_date: "",
-    user_id: "", // Add user_id to the state
+    user_id: "",
+    link: "",
+    company: "",
+    note: "",
+    email: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -51,15 +55,19 @@ export default function Create() {
     }
   };
 
-  if (loading) return(
-    <div role="status">
-        <LoaderCircle className="w-8 h-8 text-gray-600 animate-spin"/>
-    </div>
-  );
+  if (loading)
+    return (
+      <div
+        role="status"
+        className="flex items-center justify-center min-h-screen"
+      >
+        <LoaderCircle className="w-8 h-8 text-blue-600 animate-spin" />
+      </div>
+    );
 
   return (
-    <section className="bg-gray-900 min-h-screen flex flex-col">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <section className="bg-gray-900 min-h-screen flex flex-col justify-center">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-full lg:py-0">
         <a
           href="/"
           className="flex items-center mb-6 text-2xl font-semibold text-blue-500"
@@ -78,7 +86,7 @@ export default function Create() {
                   htmlFor="text"
                   className="block mb-2 text-sm font-medium text-white"
                 >
-                  Título del trabajo:
+                  <strong>Título del trabajo (OBLIGATORIO)</strong>
                 </label>
                 <input
                   type="text"
@@ -105,7 +113,24 @@ export default function Create() {
                   value={jobApplication.job_description}
                   onChange={onChange}
                   className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Requisitos: +1 año de experiencia, conocimientos en React.js y Spring Boot, etc."
+                  placeholder="Requisitos, Conocimientos, etc."
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="text"
+                  className="block mb-2 text-sm font-medium text-white"
+                >
+                  Empresa a la que postulas:
+                </label>
+                <input
+                  type="text"
+                  name="company"
+                  id="company"
+                  value={jobApplication.company}
+                  onChange={onChange}
+                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Nombre de la empresa"
                 />
               </div>
               <div>
@@ -130,7 +155,41 @@ export default function Create() {
                   htmlFor="text"
                   className="block mb-2 text-sm font-medium text-white"
                 >
-                  Status de la postulación:
+                  Enlace a la oferta laboral:
+                </label>
+                <input
+                  type="text"
+                  name="link"
+                  id="link"
+                  value={jobApplication.link}
+                  onChange={onChange}
+                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="www.jobs.com/puesto"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="text"
+                  className="block mb-2 text-sm font-medium text-white"
+                >
+                  Dirección de Email a donde enviaste la postulación:
+                </label>
+                <input
+                  type="text"
+                  name="email"
+                  id="email"
+                  value={jobApplication.email}
+                  onChange={onChange}
+                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="recruiter@gmail.com"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="text"
+                  className="block mb-2 text-sm font-medium text-white"
+                >
+                  <strong>Status de la postulación (OBLIGATORIO)</strong>
                 </label>
                 <input
                   type="text"
@@ -145,10 +204,27 @@ export default function Create() {
               </div>
               <div>
                 <label
+                  htmlFor="text"
+                  className="block mb-2 text-sm font-medium text-white"
+                >
+                  Información extra:
+                </label>
+                <input
+                  type="text"
+                  name="note"
+                  id="note"
+                  value={jobApplication.note}
+                  onChange={onChange}
+                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Feedback recibido, opinión personal, etc."
+                />
+              </div>
+              <div>
+                <label
                   htmlFor="date"
                   className="block mb-2 text-sm font-medium text-white"
                 >
-                  Fecha de postulación:
+                  <strong>Fecha de postulación (OBLIGATORIO)</strong>
                 </label>
                 <input
                   type="date"
