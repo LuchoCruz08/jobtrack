@@ -1,13 +1,19 @@
-"use client";
+"use client"
 
-import { createClient } from "@/utils/supabase/client";
-import { LoaderCircle, NotebookPen } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client"
+import { LoaderCircle, NotebookPen, Briefcase, Calendar, Link as LinkIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function Create() {
-  const supabase = createClient();
-  const router = useRouter();
+  const supabase = createClient()
+  const router = useRouter()
   const [jobApplication, setJobApplication] = useState({
     job_title: "",
     job_description: "",
@@ -19,234 +25,203 @@ export default function Create() {
     company: "",
     note: "",
     email: "",
-  });
+  })
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
 
-  // Fetch the current user and set the user_id
   useEffect(() => {
     const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
+      const { data, error } = await supabase.auth.getUser()
       if (error) {
-        console.log(error.message);
-        router.push("/login");
+        console.log(error.message)
+        router.push("/login")
       } else {
-        setJobApplication((prev) => ({ ...prev, user_id: data.user.id }));
-        setLoading(false);
+        setJobApplication((prev) => ({ ...prev, user_id: data.user.id }))
+        setLoading(false)
       }
-    };
+    }
 
-    fetchUser();
-  });
+    fetchUser()
+  })
 
   const onChange = (e) => {
-    setJobApplication({ ...jobApplication, [e.target.name]: e.target.value });
-  };
+    setJobApplication({ ...jobApplication, [e.target.name]: e.target.value })
+  }
 
   const handleCreate = async () => {
     try {
       const { data, error } = await supabase
         .from("job_applications")
-        .insert([jobApplication]);
-      if (error) throw error;
-      router.push("/dashboard");
+        .insert([jobApplication])
+      if (error) throw error
+      router.push("/dashboard")
     } catch (error) {
-      console.log(error.message);
+      console.log(error.message)
     }
-  };
+  }
 
   if (loading)
     return (
-      <div
-        role="status"
-        className="flex items-center justify-center min-h-screen"
-      >
-        <LoaderCircle className="w-8 h-8 text-blue-600 animate-spin" />
+      <div role="status" className="flex items-center justify-center min-h-screen bg-gray-900">
+        <LoaderCircle className="w-12 h-12 text-blue-500 animate-spin" />
       </div>
-    );
+    )
 
   return (
-    <section className="bg-gray-900 min-h-screen flex flex-col justify-center">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-full lg:py-0">
-        <a
-          href="/"
-          className="flex items-center mb-6 text-2xl font-semibold text-blue-500"
-        >
-          <NotebookPen />
-          JobTrack
-        </a>
-        <div className="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
-              Agrega una nueva postulación
-            </h1>
-            <form className="space-y-4 md:space-y-6">
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  <strong>Título del trabajo (OBLIGATORIO)</strong>
-                </label>
-                <input
+    <section className="bg-gray-900 min-h-screen flex flex-col justify-center py-12">
+      <div className="container mx-auto px-4">
+        <Card className="w-full max-w-2xl mx-auto bg-gray-800 border-gray-700">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <NotebookPen className="h-12 w-12 text-blue-500" />
+            </div>
+            <CardTitle className="text-3xl font-bold text-white">JobTrack</CardTitle>
+            <CardDescription className="text-gray-400">Agrega una nueva postulación</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="job_title" className="text-white">
+                  Título del trabajo <span className="text-red-500">*</span>
+                </Label>
+                <Input
                   type="text"
-                  name="job_title"
                   id="job_title"
+                  name="job_title"
                   value={jobApplication.job_title}
                   onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Fullstack Developer Jr."
                   required
+                  className="bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  Descripción del trabajo:
-                </label>
-                <input
-                  type="text"
-                  name="job_description"
+
+              <div className="space-y-2">
+                <Label htmlFor="job_description" className="text-white">Descripción del trabajo</Label>
+                <Textarea
                   id="job_description"
+                  name="job_description"
                   value={jobApplication.job_description}
                   onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Requisitos, Conocimientos, etc."
+                  className="bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  Empresa a la que postulas:
-                </label>
-                <input
-                  type="text"
-                  name="company"
-                  id="company"
-                  value={jobApplication.company}
-                  onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Nombre de la empresa"
-                />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="company" className="text-white">Empresa</Label>
+                  <Input
+                    type="text"
+                    id="company"
+                    name="company"
+                    value={jobApplication.company}
+                    onChange={onChange}
+                    placeholder="Nombre de la empresa"
+                    className="bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="platform" className="text-white">Plataforma</Label>
+                  <Input
+                    type="text"
+                    id="platform"
+                    name="platform"
+                    value={jobApplication.platform}
+                    onChange={onChange}
+                    placeholder="LinkedIn, Getonbrd, etc."
+                    className="bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
+                  />
+                </div>
               </div>
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  Plataforma desde donde aplicaste:
-                </label>
-                <input
-                  type="text"
-                  name="platform"
-                  id="platform"
-                  value={jobApplication.platform}
-                  onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="LinkedIn, Getonbrd, etc."
-                />
+
+              <div className="space-y-2">
+                <Label htmlFor="link" className="text-white">Enlace a la oferta laboral</Label>
+                <div className="relative">
+                  <LinkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Input
+                    type="url"
+                    id="link"
+                    name="link"
+                    value={jobApplication.link}
+                    onChange={onChange}
+                    placeholder="https://www.jobs.com/puesto"
+                    className="bg-gray-700 border-gray-600 placeholder-gray-400 text-white pl-10"
+                  />
+                </div>
               </div>
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  Enlace a la oferta laboral:
-                </label>
-                <input
-                  type="text"
-                  name="link"
-                  id="link"
-                  value={jobApplication.link}
-                  onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="www.jobs.com/puesto"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  Dirección de Email a donde enviaste la postulación:
-                </label>
-                <input
-                  type="text"
-                  name="email"
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-white">Email de contacto</Label>
+                <Input
+                  type="email"
                   id="email"
+                  name="email"
                   value={jobApplication.email}
                   onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="recruiter@gmail.com"
+                  placeholder="recruiter@company.com"
+                  className="bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  <strong>Status de la postulación (OBLIGATORIO)</strong>
-                </label>
-                <input
-                  type="text"
-                  name="status"
-                  id="status"
-                  value={jobApplication.status}
-                  onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Postulado, En Proceso,Aceptado, Rechazado, etc."
-                  required
-                />
+
+              <div className="space-y-2">
+                <Label htmlFor="status" className="text-white">
+                  Status de la postulación <span className="text-red-500">*</span>
+                </Label>
+                <Select name="status" value={jobApplication.status} onValueChange={(value) => onChange({ target: { name: 'status', value } })}>
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectValue placeholder="Selecciona un status" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600 text-white">
+                    <SelectItem value="Postulado">Postulado</SelectItem>
+                    <SelectItem value="En Proceso">En Proceso</SelectItem>
+                    <SelectItem value="Aceptado">Aceptado</SelectItem>
+                    <SelectItem value="Rechazado">Rechazado</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  Información extra:
-                </label>
-                <input
-                  type="text"
-                  name="note"
+
+              <div className="space-y-2">
+                <Label htmlFor="note" className="text-white">Información extra</Label>
+                <Textarea
                   id="note"
+                  name="note"
                   value={jobApplication.note}
                   onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Feedback recibido, opinión personal, etc."
+                  className="bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="date"
-                  className="block mb-2 text-sm font-medium text-white"
-                >
-                  <strong>Fecha de postulación (OBLIGATORIO)</strong>
-                </label>
-                <input
-                  type="date"
-                  name="application_date"
-                  id="application_date"
-                  value={jobApplication.application_date}
-                  onChange={onChange}
-                  className="border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
+
+              <div className="space-y-2">
+                <Label htmlFor="application_date" className="text-white">
+                  Fecha de postulación <span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Input
+                    type="date"
+                    id="application_date"
+                    name="application_date"
+                    value={jobApplication.application_date}
+                    onChange={onChange}
+                    required
+                    className="bg-gray-700 border-gray-600 placeholder-gray-400 text-white pl-10"
+                  />
+                </div>
               </div>
-              <button
-                className="bg-green-600 hover:bg-opacity-80 text-white rounded-lg px-4 py-2 duration-200 w-full"
+
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
                 type="button"
                 onClick={handleCreate}
               >
-                Crear Postulación
-              </button>
+                <Briefcase className="mr-2 h-4 w-4" /> Crear Postulación
+              </Button>
             </form>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </section>
-  );
+  )
 }

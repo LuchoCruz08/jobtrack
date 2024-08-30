@@ -20,7 +20,7 @@ export default function DashboardHeader() {
           </div>
         </div>
       </div>
-      <hr className="border-t-2 border-blue-700" />
+      <div className="h-1 bg-gradient-to-r from-blue-700 via-purple-600 to-green-500"></div>
     </header>
   );
 }
